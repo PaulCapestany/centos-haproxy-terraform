@@ -20,7 +20,7 @@ tfInstances="terraform.tfstate"
 generateAndRunCommandsForHAProxyConfig() {
   # put all generated ssh commands into temp file to then run
   echo "#!/bin/sh" > tmpSSHCommandsFile
-  chomd +x tmpSSHCommandsFile
+  chmod +x tmpSSHCommandsFile
   webInstanceCount=0
   errorCount=0
   successString=""
@@ -43,11 +43,11 @@ generateAndRunCommandsForHAProxyConfig() {
   echo "$@ \"sudo systemctl restart haproxy.service\"" >> tmpSSHCommandsFile
   # finally, run the full shell script, and delete tmpSSHCommandsFile
   ./tmpSSHCommandsFile
-  rm ./tmpSSHCommandsFile
+  rm tmpSSHCommandsFile
   if [ $errorCount -eq 0 ]; then
-    echo "SUCCESS: Deploy went flawlessly!\n\nHere's how you can find everything:\n\n$successString"
+    echo "\nSUCCESS: Deploy went flawlessly!\n\nHere's how you can find everything:\n\n$successString"
   else
-    echo "The following were deployed successfully:\n"
+    echo "\nFinished, but with errors. The following were deployed successfully:\n"
     echo "$successString\n"
     echo "You may want to look at the \"Instances\" section of https://console.aws.amazon.com/ec2/v2/home to see what went wrong with the following:\n"
     echo "$errorString"
@@ -79,7 +79,7 @@ for retry in {1..7}; do
     # grab all of the web servers' public IPs and names and run ssh commands to finish haproxy setup
     generateAndRunCommandsForHAProxyConfig "$sshLogin"  \
     && \
-    echo "\nInstance \"A\" (load-balancer) is live at: http://$haproxyPublicIP/helloz" \
+    echo "Instance \"A\" (load-balancer) is live at: http://$haproxyPublicIP/helloz" \
     && \
     echo "HAProxy Stats can be found at: http://$haproxyPublicIP/stats" \
     && \
