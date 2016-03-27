@@ -25,9 +25,10 @@ getWebIPsAndCommandsForHAProxyConfig() {
       jqStatement=`echo ".modules[].resources.\"aws_instance.web.$count\".primary.attributes.public_ip"`
       webServerPublicIP=$(cat "$tfInstances" | \
         jq -r "$jqStatement")
-      echo "echo '    server $serverName $webServerPublicIP:80 check' | sudo tee --append /etc/haproxy/haproxy.cfg && \\"
+      echo "$@ \"echo '    server $serverName $webServerPublicIP:80 check' | sudo tee --append /etc/haproxy/haproxy.cfg\" && \\"
       let count=count+1
   done
+  echo "$@ \"sudo systemctl restart haproxy.service\""
 }
 
 # make sure all instances are really up (e.g. when terraform isn't handling all the setup)
@@ -50,14 +51,10 @@ for retry in {1..7}; do
     haproxyPublicIP=$(cat "$tfInstances" | \
       jq -r '.modules[].resources."aws_instance.haproxy_load_balancer".primary.attributes.public_ip') \
     && \
-    # automatically output commands necessary to make manual part a bit less annoying
-    echo "ssh -o StrictHostKeyChecking=no -i $pathToPEM -A centos@$haproxyPublicIP" \
+    # set things up to automatically output commands necessary to make manual part a bit less annoying
+    sshLogin=`echo "ssh -t -o StrictHostKeyChecking=no -i $pathToPEM -A centos@$haproxyPublicIP"` \
     && \
-    echo "--------------------------------------------------------------------" \
-    && \
-    getWebIPsAndCommandsForHAProxyConfig \
-    && \
-    echo "sudo systemctl restart haproxy.service" \
+    getWebIPsAndCommandsForHAProxyConfig "$sshLogin"  \
     && \
   # if desired capacity has not been reached, wait
   break || \

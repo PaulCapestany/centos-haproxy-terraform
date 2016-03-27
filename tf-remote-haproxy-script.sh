@@ -67,8 +67,6 @@ frontend http_front
 #---------------------------------------------------------------------
 backend http_back
     balance     roundrobin
-    # server  A SOME_IP_ADDRESS:80 check
-    # server  B ANOTHER_IP_ADDRESS:80 check
 " > /etc/haproxy/haproxy.cfg
 
 cp /usr/lib/systemd/system/haproxy.service /etc/systemd/system/haproxy.service
