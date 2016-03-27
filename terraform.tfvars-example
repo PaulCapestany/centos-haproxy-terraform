@@ -1,0 +1,20 @@
+#################
+#   WARNING!!!  #
+#################
+
+# this file contains all secrets and/or personal info necessary for terraform to work
+# *DO NOT* check this file into git/github!
+
+#################
+# PERSONAL INFO #
+#################
+
+aws_pem_key_file_path = "/path/to/your/pem/key/my_aws.pem"
+aws_key_name = "my_aws"
+
+#################
+# SECRET KEYS!! #
+#################
+
+aws_access_key = "XYZ"
+aws_secret_key = "SUPERSECRET"
