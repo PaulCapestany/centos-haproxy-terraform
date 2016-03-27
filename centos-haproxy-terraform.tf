@@ -45,9 +45,8 @@ resource "aws_security_group" "terraform_example_security_group" {
 resource "aws_instance" "haproxy_load_balancer" {
     security_groups = ["${aws_security_group.terraform_example_security_group.name}"]
 
-    instance_type = "t2.micro"
+    instance_type = "${var.instance_type}"
 
-    # the CentOS AMI should be HVM https://wiki.centos.org/Cloud/AWS
     ami = "${var.aws_centos_ami}"
 
     # The connection block tells our provisioner how to
@@ -71,10 +70,8 @@ resource "aws_instance" "haproxy_load_balancer" {
 resource "aws_instance" "web" {
     security_groups = ["${aws_security_group.terraform_example_security_group.name}"]
 
-    # "nano" instances were too slow/buggy, use micro at the very least
-    instance_type = "t2.micro"
+    instance_type = "${var.instance_type}"
 
-    # the CentOS AMI should be HVM https://wiki.centos.org/Cloud/AWS
     ami = "${var.aws_centos_ami}"
 
     connection {
