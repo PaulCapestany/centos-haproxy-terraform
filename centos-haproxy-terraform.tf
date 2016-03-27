@@ -60,10 +60,16 @@ resource "aws_instance" "haproxy_load_balancer" {
 
     count = 1
 
+    provisioner "file" {
+        source = "tf-remote-haproxy-script.sh"
+        destination = "/tmp/tf-remote-haproxy-script.sh"
+    }
+
     provisioner "remote-exec" {
-      inline = [
-      "sudo yum install haproxy -y"
-      ]
+        inline = [
+          "chmod +x /tmp/tf-remote-haproxy-script.sh",
+          "sudo /tmp/tf-remote-haproxy-script.sh"
+        ]
     }
 }
 
