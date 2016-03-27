@@ -1,3 +1,8 @@
+# note that by default AWS seems to limit the number of instances to 20
+variable "desired_web_server_count" {
+  default = 4
+}
+
 # "nano" AWS instances seem too slow/buggy for this demo, use "micro" or above
 variable "instance_type" {
   default = "t2.micro"
@@ -9,12 +14,9 @@ variable "aws_centos_ami" {
   default = "ami-6d1c2007"
 }
 
+# if you change the region you'll have to find the proper AMI to include above
 variable "aws_region" {
   default = "us-east-1"
-}
-
-variable "desired_web_server_count" {
-  default = 4
 }
 
 ########################
