@@ -6,61 +6,63 @@
 terraform apply
 
 # grab output from terraform on desired capacity, adding 1 for load balancer instance
-desiredCapacity=$((`terraform output desired_web_server_count`+1))
-
-# TODO: should clean this up
-awsInstances="_logs/instances.json"
+desiredWebServerCount=`terraform output desired_web_server_count`
+totalDesiredCapacity=$(($desiredWebServerCount+1))
 
 # grab pem file path from `terraform.tfvars`
 pathToPEM=$(cat terraform.tfvars | \
   grep "aws_pem_key_file_path.*\"" | \
   sed 's;\(aws_pem_key_file_path.*"\)\(.*\)\("\);\2;')
 
-# make sure all instances are up in order to get useful info, like public/private IPs
-for count in {1..7}; do
+awscliInstances="awscli_instances.json"
+tfInstances="terraform.tfstate"
+
+getWebIPsAndCommandsForHAProxyConfig() {
+  count=0
+  while [ $count -lt $desiredWebServerCount ]; do
+      numToASCII=$(($count + 66))
+      serverName=$(printf \\$(printf '%03o' $numToASCII))
+      jqStatement=`echo ".modules[].resources.\"aws_instance.web.$count\".primary.attributes.public_ip"`
+      webServerPublicIP=$(cat "$tfInstances" | \
+        jq -r "$jqStatement")
+      echo "echo '    server $serverName $webServerPublicIP:80 check' | sudo tee --append /etc/haproxy/haproxy.cfg && \\"
+      let count=count+1
+  done
+}
+
+# make sure all instances are really up (e.g. when terraform isn't handling all the setup)
+for retry in {1..7}; do
 
   # need to wait if desired amount of instances aren't ready yet
-  secondsToSleep=$(($count*$count))
+  secondsToSleep=$(($retry*$retry))
 
   # use awscli tool to query AWS's API and get info on instances
-  aws ec2 describe-instances > "$awsInstances"
+  aws ec2 describe-instances > "$awscliInstances"
 
   # check if desired capacity has been reached, if not, break and sleep
-  cat "$awsInstances" | \
+  cat "$awscliInstances" | \
   jq '.Reservations[].Instances[] | "\(.State.Name)"' | \
   sort | \
   uniq -c | \
-  grep -q "   $desiredCapacity \"running\"" \
+  grep -q "   $totalDesiredCapacity \"running\"" \
     && \
-    # extract both public and private IP addresses for easy access in info.html
-    cat "$awsInstances" | \
-      jq -r '.Reservations[].Instances[] | "<p>Public Endpoint: <a href=\"http://\(.PublicIpAddress)/helloz\">http://\(.PublicIpAddress)/helloz</a></p><p>Private IP: \(.PrivateIpAddress)</p><br>"' | \
-      sort | \
-      sed 's;.*http://null.*;;' | \
-      sed '/./!d' > info.html \
+    # can now assume that all instances are up, so extract info from `terraform.tfstate`, which is just a JSON file
+    haproxyPublicIP=$(cat "$tfInstances" | \
+      jq -r '.modules[].resources."aws_instance.haproxy_load_balancer".primary.attributes.public_ip') \
     && \
     # automatically output commands necessary to make manual part a bit less annoying
-    cat "$awsInstances" | \
-      # ssh commands for each machine
-      jq -r --arg JQ_ARG "$pathToPEM" '.Reservations[].Instances[] | "ssh -o StrictHostKeyChecking=no -i \($JQ_ARG) -A centos@\(.PublicIpAddress)"' | \
-      sort | \
-      uniq | \
-      sed '/.*@null$/d' \
+    echo "ssh -o StrictHostKeyChecking=no -i $pathToPEM -A centos@$haproxyPublicIP" \
     && \
     echo "--------------------------------------------------------------------" \
     && \
-    cat "$awsInstances" | \
-      # command to run on haproxy instance to setup load-balancing
-      jq -r '.Reservations[].Instances[] | "\(.PublicIpAddress)"' | \
-      sort | \
-      sed 's;.*null.*;;' | \
-      sed '/./!d' | \
-      sed "s;\(.*\);echo \'    server INSERT_INSTANCE_NAME_HERE \1:80 check\' | sudo tee --append /etc/haproxy/haproxy.cfg \&\& \\\;" \
-      && \
-      echo "sudo systemctl restart haproxy.service" \
+    getWebIPsAndCommandsForHAProxyConfig \
+    && \
+    echo "sudo systemctl restart haproxy.service" \
     && \
   # if desired capacity has not been reached, wait
   break || \
   sleep $secondsToSleep
 
 done
+
+rm "$awscliInstances"
