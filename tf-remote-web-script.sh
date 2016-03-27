@@ -16,7 +16,8 @@ numToASCII=$(($@ + 66))
 printf \\$(printf '%03o' $numToASCII) >> "$hellozEndpoint"
 
 # output public IP address for fun
-echo " (`curl http://whatismyip.akamai.com/`)" >> "$hellozEndpoint"
+getInstancePublicIP=`curl http://whatismyip.akamai.com/`
+echo " (<a href=\"http://$getInstancePublicIP/helloz\">http://$getInstancePublicIP/helloz</a>)" >> "$hellozEndpoint"
 
 cp /usr/lib/systemd/system/httpd.service /etc/systemd/system/httpd.service
 
