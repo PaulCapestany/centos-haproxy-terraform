@@ -1,12 +1,12 @@
-# Load-balanced web server deployment with Terraform
+# Load-balanced server deployment with Terraform
 
 This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running [Apache HTTP servers](http://apache.org/) with web traffic load-balanced by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no bleeding-edge DevOps\* here.
 
 ### Demo explanation
 
-By default, this demo sets up 1 t2.micro AWS instance running HAProxy, which we'll call instance "A". The point of "A" is to act as a load-balancer for the 4 t2.micro AWS instances that will be running httpd and responding to requests from the endpoint **/helloz** with their respective names of "B", "C", "D", and "E". Requests will roundrobin, so refreshing the "A" **/helloz** endpoint should show an equal distribution of responses by each individual web instance.
+By default, this demo sets up ***one*** *t2.micro* AWS instance running HAProxy, which we'll call instance **"A"**. The point of **"A"** is to act as a load-balancer for the ***four*** *t2.micro* AWS instances that will be running httpd and responding to requests from the endpoint *[/helloz](http://52.23.181.242/helloz)* with their respective names of **"B"**, **"C"**, **"D"**, and **"E"**. Requests will roundrobin, so refreshing the **"A"** *[/helloz](http://52.23.181.242/helloz)* endpoint should show an equal distribution of responses by each individual web instance.
 
-If any of the web instances are turned off they will return to serving traffic once online again (the load-balancer will also resume its job if rebooted).
+If any of the web instances are turned off they will return to serving traffic once online again (the load-balancer will also resume its job if rebooted). HAProxy's admin interface is exposed at *[/stats](http://52.23.181.242/stats)* for convenience and testing purposes.
 
 \* if further automating SysAdmin-like tasks is of interest to you, feel free to check out my [couchbase-sync-gateway-terraform](https://github.com/PaulCapestany/couchbase-sync-gateway-terraform) repo.
 
@@ -18,11 +18,11 @@ Once you're set up, launching entire clusters is as simple as typing `./run.sh`,
 
 First you need to make sure you have the following command line tools locally installed:
 
-* `[terraform](https://www.terraform.io/)`: infrastructure configuration and launch tool which is provider-agnostic
-* `[awscli](https://aws.amazon.com/cli/)`: Amazon's unified tool to manage AWS services
-* `[jq](https://stedolan.github.io/jq/)`: like `sed` for JSON
+* [terraform](https://www.terraform.io/): infrastructure configuration and launch tool which is provider-agnostic
+* [awscli](https://aws.amazon.com/cli/): Amazon's unified tool to manage AWS services
+* [jq](https://stedolan.github.io/jq/): like `sed` for JSON
 
-If you don't have them and are running OS X, running `brew install ____` will get it on your system.
+If you don't have them and are running OS X, running `brew install ____` will get any of them on your system.
 
 ### Setup
 
@@ -48,8 +48,8 @@ Instance "A" (load-balancer) is live at: http://52.23.181.242/helloz
 HAProxy Stats can be found at: http://52.23.181.242/stats
 ```
 
-Note that [http://52.23.181.242/stats](http://52.23.181.242/stats) is *[not secured](https://github.com/PaulCapestany/centos-haproxy-terraform/commit/8223d8b7c526816ca06e1a71020dd4716a1e8935#diff-b3a5e984b67ba5d8ad95fa03e148e54bR67)* for the purposes of this demo, and allows anyone to easily take backends down/up/etc via the admin panel. You probably wouldn't want to do this otherwise, but it's a quick and straightforward way to test whether your HAProxy load-balancer is really working properly.
+Note that *[/stats](http://52.23.181.242/stats)* is ***[not secured](https://github.com/PaulCapestany/centos-haproxy-terraform/commit/8223d8b7c526816ca06e1a71020dd4716a1e8935#diff-b3a5e984b67ba5d8ad95fa03e148e54bR67)*** for the purposes of this demo, and allows anyone to easily take backends down/up/etc via the admin panel. You probably wouldn't want to do this otherwise, but it's a quick and straightforward way to test whether your HAProxy load-balancer is really working properly.
 
-## Avoid unexpected AWS bills
+## Avoid unexpected AWS bills!!!
 
 ***IMPORTANT:*** to completely destroy the cluster, run `terraform destroy -force` within the project directory, otherwise you might get an unexpectedly more expensive AWS bill.
