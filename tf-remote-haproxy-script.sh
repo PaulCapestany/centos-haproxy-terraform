@@ -59,8 +59,12 @@ defaults
 #---------------------------------------------------------------------
 frontend http_front
    bind *:80
-   stats uri /haproxy?stats
+   stats uri /stats
    default_backend http_back
+
+   # !!!: normally you would not want to expose this, only for demo
+   # this allows anyone to easily take backends down/up/etc via panel
+   stats admin if TRUE
 
 #---------------------------------------------------------------------
 # round robin balancing between the various backends
