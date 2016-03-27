@@ -14,7 +14,7 @@ variable "aws_region" {
 }
 
 variable "desired_web_server_count" {
-  default = 10
+  default = 4
 }
 
 ########################
