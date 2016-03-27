@@ -1,5 +1,2 @@
 # you should probably add this to your .gitignore_global file
 terraform.tfvars
-
-# generated files that should be ignored
-info.html

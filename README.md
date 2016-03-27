@@ -9,7 +9,7 @@ This repo is meant to be an example of how to easily set up an arbitrary-sized c
 * TODO: explain personal/secret info needed for setup
 * TODO: explain `terraform`, `awscli`, and `jq` prerequisites
 * TODO: explain what `run.sh` does
-* TODO: explain info.html, load-balanced endpoints, and /haproxy?stats
+* TODO: explain load-balanced endpoints, and /haproxy?stats
 * TODO: explain SSHing into haproxy instance in order to manually run the following:
 
 ```
