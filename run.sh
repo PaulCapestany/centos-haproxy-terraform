@@ -51,6 +51,10 @@ for retry in {1..7}; do
     haproxyPublicIP=$(cat "$tfInstances" | \
       jq -r '.modules[].resources."aws_instance.haproxy_load_balancer".primary.attributes.public_ip') \
     && \
+    echo "\nhttp://$haproxyPublicIP/helloz" \
+    && \
+    echo "http://$haproxyPublicIP/stats\n" \
+    && \
     # set things up to automatically output commands necessary to make manual part a bit less annoying
     sshLogin=`echo "ssh -t -o StrictHostKeyChecking=no -i $pathToPEM -A centos@$haproxyPublicIP"` \
     && \
