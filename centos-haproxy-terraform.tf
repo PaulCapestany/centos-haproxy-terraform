@@ -66,7 +66,10 @@ resource "aws_instance" "haproxy_load_balancer" {
     }
 
     provisioner "remote-exec" {
+        # some `sleep` might be needed to prevent i/o timeout here?
+        # details: https://github.com/hashicorp/terraform/issues/1449#issuecomment-91600948
         inline = [
+          "sleep 30",
           "chmod +x /tmp/tf-remote-haproxy-script.sh",
           "sudo /tmp/tf-remote-haproxy-script.sh"
         ]
@@ -95,7 +98,10 @@ resource "aws_instance" "web" {
     }
 
     provisioner "remote-exec" {
+        # some `sleep` might be needed to prevent i/o timeout here?
+        # details: https://github.com/hashicorp/terraform/issues/1449#issuecomment-91600948
         inline = [
+          "sleep 30",
           "chmod +x /tmp/tf-remote-web-script.sh",
           "sudo /tmp/tf-remote-web-script.sh ${count.index}"
         ]
