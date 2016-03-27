@@ -1,6 +1,8 @@
 # centos-haproxy-terraform
 
-This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running [Apache HTTP servers](http://apache.org/) with web traffic load-balanced by [HAProxy](http://www.haproxy.org/) on AWS, using [Terraform](https://terraform.io/).
+## Simple load-balanced web server deployment with Terraform
+
+This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running [Apache HTTP servers](http://apache.org/) with web traffic load-balanced by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no bleeding-edge DevOps here (though if you're interested in that, feel free to check out my [couchbase-sync-gateway-terraform](https://github.com/PaulCapestany/couchbase-sync-gateway-terraform) repo).
 
 ## Usage
 
