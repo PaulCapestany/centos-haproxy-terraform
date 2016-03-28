@@ -1,12 +1,12 @@
 # Load-balanced server deployment with Terraform
 
-This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running [Apache HTTP servers](http://apache.org/) with web traffic load-balanced by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no bleeding-edge DevOps\* here.
+This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running Apache's [httpd](http://apache.org/) servers with web traffic load-balanced by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no bleeding-edge DevOps\* here.
 
 ![load-balancing-architecture](http://ipiqi.com/web-load-balancing-cluster.png)
 
 ### Demo explanation
 
-By default, this demo sets up ***one*** t2.micro AWS instance running HAProxy, which we'll call instance **"A"**. The point of **"A"** is to act as a load-balancer for the ***four*** t2.micro AWS instances that will be running httpd and responding to requests from the endpoint *[/helloz](http://52.23.181.242/helloz)* with their respective names of **"B"**, **"C"**, **"D"**, and **"E"**. Requests will roundrobin, so refreshing the **"A"** *[/helloz](http://52.23.181.242/helloz)* endpoint should show an equal distribution of responses by each individual web instance.
+By default, this demo sets up ***one*** t2.micro AWS instance running HAProxy as a load-balancer, which we'll call instance **"A"**. The point of **"A"** is to, as the term implies, balance the load of incoming web traffic for the ***four*** t2.micro AWS instances that will be running httpd (i.e. responding to web requests) and answering all queries to the *[/helloz](http://52.23.181.242/helloz)* endpoint with their respective names of **"B"**, **"C"**, **"D"**, and **"E"**. Requests will [roundrobin](https://www.nginx.com/resources/glossary/round-robin-load-balancing/), so refreshing the **"A"** *[/helloz](http://52.23.181.242/helloz)* endpoint should show an equal amount of responses from **"B"**, **"C"**, **"D"**, and **"E"**.
 
 If any of the web instances are turned off they will return to serving traffic once online again (the load-balancer will also resume its job if rebooted). HAProxy's admin interface is exposed at *[/stats](http://52.23.181.242/stats)* for convenience and testing purposes.
 
