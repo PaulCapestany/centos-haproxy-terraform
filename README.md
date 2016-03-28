@@ -1,6 +1,6 @@
 # Load-balanced server deployment with Terraform
 
-This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running Apache's [httpd](http://apache.org/) servers with web traffic "[load-balanced](https://www.nginx.com/resources/glossary/round-robin-load-balancing/)" by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no bleeding-edge DevOps\* here.
+This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running Apache's [httpd](http://apache.org/) servers with web traffic "[load-balanced](https://www.nginx.com/resources/glossary/round-robin-load-balancing/)" by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no scary bleeding-edge DevOps\* here.
 
 ![load-balancing-architecture](http://ipiqi.com/web-load-balancing-cluster.png)
 
@@ -10,7 +10,7 @@ By default, this demo sets up ***one*** t2.micro AWS instance running HAProxy as
 
 If any of the web instances are turned off they will return to serving traffic once online again (the load-balancer will also resume its job if rebooted). For example, if **"C"** is experiencing some technical difficulty, and **"D"** has for some reason had to completely restart, web requests won't be directed at **"D"** since it's offline. By the way, for this demo, HAProxy's admin interface is exposed at *[/stats](http://52.23.181.242/stats)* for convenience and testing purposes.
 
-\* if further automating SysAdmin-like tasks is of interest to you, feel free to check out my [couchbase-sync-gateway-terraform](https://github.com/PaulCapestany/couchbase-sync-gateway-terraform) repo.
+\* however, if further automating SysAdmin-like tasks is the kinda thing you're into, feel free to check out my [couchbase-sync-gateway-terraform](https://github.com/PaulCapestany/couchbase-sync-gateway-terraform) repo.
 
 ## Usage
 
