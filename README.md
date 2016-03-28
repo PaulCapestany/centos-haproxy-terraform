@@ -8,6 +8,8 @@ By default, this demo sets up ***one*** *t2.micro* AWS instance running HAProxy,
 
 If any of the web instances are turned off they will return to serving traffic once online again (the load-balancer will also resume its job if rebooted). HAProxy's admin interface is exposed at *[/stats](http://52.23.181.242/stats)* for convenience and testing purposes.
 
+![load-balancing-architecture](http://ipiqi.com/web-load-balancing-cluster.png)
+
 \* if further automating SysAdmin-like tasks is of interest to you, feel free to check out my [couchbase-sync-gateway-terraform](https://github.com/PaulCapestany/couchbase-sync-gateway-terraform) repo.
 
 ## Usage
