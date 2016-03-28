@@ -2,7 +2,7 @@
 
 This repo is meant to be an example of how to easily set up an arbitrary-sized cluster of [CentOS 7](https://centos.org/) machines running Apache's [httpd](http://apache.org/) servers with web traffic "[load-balanced](https://www.nginx.com/resources/glossary/round-robin-load-balancing/)" by [HAProxy](http://www.haproxy.org/) on AWS, automated with some shell scripting and [Terraform](https://terraform.io/). It's purposefully not using containers, service discovery, auto-scaling, etc, so no scary bleeding-edge DevOps\* here.
 
-![load-balancing-architecture](http://ipiqi.com/web-load-balancing-cluster.png)
+![load-balancing-architecture](http://ipiqi.com/paul-capestany-haproxy-web-balancer.png)
 
 ### Demo explanation
 
