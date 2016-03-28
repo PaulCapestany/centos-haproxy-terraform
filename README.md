@@ -22,11 +22,11 @@ First you need to make sure you have the following command line tools locally in
 * [awscli](https://aws.amazon.com/cli/): Amazon's unified tool to manage AWS services
 * [jq](https://stedolan.github.io/jq/): like `sed` for JSON
 
-If you don't have them and are running OS X, running `brew install ____` will get any of them on your system.
+If you don't have them and are running OS X (and already have [homebrew](http://brew.sh/)), running `brew install ____` will get any of them on your system.
 
 ### Setup
 
-Clone this repo with `git clone https://github.com/PaulCapestany/centos-haproxy-terraform.git` and `cd` to the project. In it, you'll see the *terraform.tfvars-example* file, make a copy of it, naming it *terraform.tfvars* and put your personal info in it. You should make sure you never check this file into git/Github.
+Clone this repo with `git clone https://github.com/PaulCapestany/centos-haproxy-terraform.git` and `cd` to the project. In the main project directory, you'll see the *terraform.tfvars-example* file, make a copy of it, naming it *terraform.tfvars* and adding your personal info to it. You should make sure you never check this file into git/Github.
 
 Next, take a look at the *variables.tf* file. You don't need to change any of them, but if you wanted to change the number of web servers that get deployed, that's where you'd do so. Part of the point of terraform is to keep infrastructure configuration changes under version control (for example, you'd want to make commits after any `terraform apply` or `terraform destroy` actions). It might help to read [Introduction to Terraform](https://www.terraform.io/intro/index.html) to learn more, but you shouldn't need to in order to run this demo.
 
